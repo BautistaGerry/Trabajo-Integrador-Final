@@ -12,7 +12,6 @@ if (ENVIRONMENT.MODE === 'development') {
     dns.setServers(['8.8.8.8', '8.8.4.4']);
 }
 
-// Conexión MongoDB delegada al middleware
 const app = express();
 const PORT = ENVIRONMENT.PORT || 3001;
 
@@ -23,7 +22,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// DB connection middleware for Serverless
 app.use(async (req, res, next) => {
     await connectMongoDB();
     next();
