@@ -5,6 +5,10 @@ class CategoryRepository {
         return await Category.find({ activo: true, creador: user_id }).sort({ nombre: 1 })
     }
 
+    async getAllActive() {
+        return await Category.find({ activo: true }).sort({ nombre: 1 })
+    }
+
     async getById(category_id) {
         return await Category.findOne({ _id: category_id, activo: true })
     }

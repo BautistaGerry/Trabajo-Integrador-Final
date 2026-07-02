@@ -26,7 +26,7 @@ export default function EventsPage() {
     }
 
     useEffect(() => {
-        api.get('/categories').then(res => setCategories(res.data.categories || []))
+        api.get('/categories/all').then(res => setCategories(res.data.categories || []))
     }, [])
 
     useEffect(() => { fetchEvents() }, [filterCat, filterEstado])

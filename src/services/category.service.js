@@ -6,6 +6,10 @@ class CategoryService {
         return await categoryRepository.getAllByUser(user_id)
     }
 
+    async getAllActive() {
+        return await categoryRepository.getAllActive()
+    }
+
     async getById(category_id) {
         const category = await categoryRepository.getById(category_id)
         if (!category) {

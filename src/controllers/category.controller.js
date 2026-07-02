@@ -12,6 +12,15 @@ class CategoryController {
         }
     }
 
+    async getAllPublic(req, res) {
+        try {
+            const categories = await categoryService.getAllActive()
+            return res.status(200).json({ ok: true, status: 200, data: { categories } })
+        } catch (error) {
+            return CategoryController._handleError(res, error)
+        }
+    }
+
     async getById(req, res) {
         try {
             const { id } = req.params
