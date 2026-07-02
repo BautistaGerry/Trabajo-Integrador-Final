@@ -1,0 +1,28 @@
+{
+  "name": "event-manager-backend",
+  "version": "1.0.0",
+  "description": "Backend para Gestor de Eventos — Express + MongoDB + JWT + Nodemailer",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node --env-file=.env ./src/main.js",
+    "dev": "node --env-file=.env --watch ./src/main.js"
+  },
+  "keywords": [
+    "events",
+    "express",
+    "mongodb",
+    "jwt"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.0",
+    "nodemailer": "^8.0.7"
+  }
+}
