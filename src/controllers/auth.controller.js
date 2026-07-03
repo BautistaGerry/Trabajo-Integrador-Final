@@ -4,7 +4,6 @@ import ServerError from "../helpers/serverError.helper.js";
 import userRepository from "../repositories/user.repository.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose'
 
 class AuthController {
     async register(req, res) {
@@ -218,96 +217,6 @@ class AuthController {
                     status: 500
                 });
             }
-        }
-    }
-
-    async forgotPassword(req, res) {
-        try {
-            const { email } = req.body;
-            if (!email) {
-                throw new ServerError('El email es obligatorio', 400);
-            }
-
-            const user = await userRepository.getByEmail(email);
-            if (!user) {
-                throw new ServerError('Usuario no encontrado', 404);
-            }
-
-            // Usamos password actual como parte del secreto, para que el token se invalide solo al cambiar la contraseña
-            const reset_token = jwt.sign(
-                { email: email, id: user._id },
-                ENVIRONMENT.JWT_SECRET + user.password,
-                { expiresIn: '15m' }
-            );
-
-            await mailer_transport.sendMail({
-                to: email,
-                from: ENVIRONMENT.GMAIL_USERNAME,
-                subject: "Recuperar contraseña - Event Manager",
-                html: `
-                    <h1>Recuperación de contraseña</h1>
-                    <p>Has solicitado restablecer tu contraseña para Event Manager.</p>
-                    <p>Haz clic en el siguiente enlace para crear una nueva (tienes 15 minutos):</p>
-                    <p><a href="${ENVIRONMENT.URL_FRONTEND}/reset-password?token=${reset_token}&id=${user._id}">Restablecer contraseña</a></p>
-                `
-            });
-
-            return res.status(200).json({
-                ok: true,
-                status: 200,
-                message: 'Se ha enviado un correo con las instrucciones para restablecer tu contraseña'
-            });
-
-        } catch (error) {
-            if (error instanceof ServerError) {
-                return res.status(error.status).json({ message: error.message, ok: false, status: error.status });
-            }
-            console.error('Error crítico:', error);
-            return res.status(500).json({ message: 'Error interno del servidor', ok: false, status: 500 });
-        }
-    }
-
-    async resetPassword(req, res) {
-        try {
-            const { token, id, new_password } = req.body;
-
-            if (!token || !id || !new_password) {
-                throw new ServerError('Faltan datos obligatorios', 400);
-            }
-            if (new_password.length < 6) {
-                throw new ServerError('La contraseña debe tener al menos 6 caracteres', 400);
-            }
-            if (!mongoose.Types.ObjectId.isValid(id)) {
-                throw new ServerError('ID de usuario inválido', 400);
-            }
-
-            const user = await userRepository.getById(id);
-            if (!user) {
-                throw new ServerError('Usuario no encontrado', 404);
-            }
-
-            // Verificamos usando el secreto que incluye el password actual
-            try {
-                jwt.verify(token, ENVIRONMENT.JWT_SECRET + user.password);
-            } catch (err) {
-                throw new ServerError('Token inválido o expirado', 400);
-            }
-
-            const hashed_password = await bcrypt.hash(new_password, 12);
-            await userRepository.updateById(user._id, { password: hashed_password });
-
-            return res.status(200).json({
-                ok: true,
-                status: 200,
-                message: 'Contraseña restablecida con éxito'
-            });
-
-        } catch (error) {
-            if (error instanceof ServerError) {
-                return res.status(error.status).json({ message: error.message, ok: false, status: error.status });
-            }
-            console.error('Error crítico:', error);
-            return res.status(500).json({ message: 'Error interno del servidor', ok: false, status: 500 });
         }
     }
 }
