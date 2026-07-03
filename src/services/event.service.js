@@ -2,6 +2,7 @@ import eventRepository from '../repositories/event.repository.js'
 import categoryRepository from '../repositories/category.repository.js'
 import ServerError from '../helpers/serverError.helper.js'
 import { EVENT_ESTADOS } from '../models/event.model.js'
+import mongoose from 'mongoose'
 
 class EventService {
     async getAll(filters = {}) {
@@ -9,6 +10,9 @@ class EventService {
     }
 
     async getById(event_id) {
+        if (!mongoose.Types.ObjectId.isValid(event_id)) {
+            throw new ServerError('ID de evento inválido', 400)
+        }
         const event = await eventRepository.getById(event_id)
         if (!event) {
             throw new ServerError('Evento no encontrado', 404)
@@ -98,11 +102,15 @@ class EventService {
     }
 
     async delete(event_id, user_id) {
+        if (!mongoose.Types.ObjectId.isValid(event_id)) {
+            throw new ServerError('ID de evento inválido', 400)
+        }
         const event = await eventRepository.getById(event_id)
         if (!event) {
             throw new ServerError('Evento no encontrado', 404)
         }
-        if (event.fk_creador_id._id.toString() !== user_id.toString()) {
+        const creador_id = event.fk_creador_id._id || event.fk_creador_id
+        if (creador_id.toString() !== user_id.toString()) {
             throw new ServerError('No tienes permiso para eliminar este evento', 403)
         }
         return await eventRepository.softDeleteById(event_id)

@@ -1,5 +1,6 @@
 import categoryRepository from '../repositories/category.repository.js'
 import ServerError from '../helpers/serverError.helper.js'
+import mongoose from 'mongoose'
 
 class CategoryService {
     async getAll(user_id) {
@@ -11,6 +12,9 @@ class CategoryService {
     }
 
     async getById(category_id) {
+        if (!mongoose.Types.ObjectId.isValid(category_id)) {
+            throw new ServerError('ID de categoría inválido', 400)
+        }
         const category = await categoryRepository.getById(category_id)
         if (!category) {
             throw new ServerError('Categoría no encontrada', 404)
@@ -26,6 +30,9 @@ class CategoryService {
     }
 
     async update(category_id, update_data, user_id) {
+        if (!mongoose.Types.ObjectId.isValid(category_id)) {
+            throw new ServerError('ID de categoría inválido', 400)
+        }
         const category = await categoryRepository.getByIdAndCreador(category_id, user_id)
         if (!category) {
             throw new ServerError('Categoría no encontrada o no tenés permiso para editarla', 403)
@@ -43,6 +50,9 @@ class CategoryService {
     }
 
     async delete(category_id, user_id) {
+        if (!mongoose.Types.ObjectId.isValid(category_id)) {
+            throw new ServerError('ID de categoría inválido', 400)
+        }
         const category = await categoryRepository.getByIdAndCreador(category_id, user_id)
         if (!category) {
             throw new ServerError('Categoría no encontrada o no tenés permiso para eliminarla', 403)
