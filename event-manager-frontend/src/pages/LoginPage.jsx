@@ -44,6 +44,9 @@ export default function LoginPage() {
                         <label htmlFor="password">Contraseña</label>
                         <input id="password" name="password" type="password" className="form-control" value={form.password} onChange={handleChange} placeholder="••••••••" required />
                     </div>
+                    <p className="text-muted text-sm" style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+                        <Link to="/forgot-password" style={{ color: 'var(--color-primary)', fontWeight: 500, fontSize: '0.83rem' }}>¿Olvidaste tu contraseña?</Link>
+                    </p>
                     <button id="login-btn" type="submit" className="btn btn-primary w-full mt-2" disabled={loading}>
                         {loading ? 'Ingresando...' : 'Ingresar'}
                     </button>

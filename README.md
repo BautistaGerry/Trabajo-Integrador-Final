@@ -116,20 +116,6 @@ src/
 | DELETE | `/:id` | — | ✅ | Soft-delete (solo creador) |
 | GET    | `/me/mis-eventos` | — | ✅ | Eventos creados por el usuario logueado |
 
-**Body de evento:**
-```json
-{
-  "titulo": "Festival de Jazz",
-  "descripcion": "...",
-  "fecha_inicio": "2025-08-10T20:00",
-  "fecha_fin": "2025-08-10T23:30",
-  "ubicacion": "Teatro Colón, Buenos Aires",
-  "capacidad_maxima": 500,
-  "imagen_url": "https://...",
-  "categoria_id": "<ObjectId>",
-  "estado": "activo"
-}
-```
 
 ---
 
