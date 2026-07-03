@@ -60,12 +60,16 @@ class EventService {
     }
 
     async update(event_id, update_data, user_id) {
+        if (!mongoose.Types.ObjectId.isValid(event_id)) {
+            throw new ServerError('ID de evento inválido', 400)
+        }
         const event = await eventRepository.getById(event_id)
         if (!event) {
             throw new ServerError('Evento no encontrado', 404)
         }
 
-        if (event.fk_creador_id._id.toString() !== user_id.toString()) {
+        const creador_id = event.fk_creador_id?._id || event.fk_creador_id
+        if (!creador_id || creador_id.toString() !== user_id.toString()) {
             throw new ServerError('No tienes permiso para editar este evento', 403)
         }
 
